@@ -21,6 +21,7 @@ export type CompareKind =
     | 'gte'
     | 'lt'
     | 'lte'
+    | 'neq'
 
 export interface Compare {
     kind: CompareKind
@@ -39,6 +40,7 @@ export const gt = compare('gt')
 export const gte = compare('gte')
 export const lt = compare('lt')
 export const lte = compare('lte')
+export const neq = compare('neq')
 
 export type LogicalKind =
     | 'and'

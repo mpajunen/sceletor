@@ -1,5 +1,5 @@
 import test from 'ava'
-import { and, equal, gt, gte, lt, lte, not, or } from '../selector'
+import { and, equal, gt, gte, lt, lte, neq, not, or } from '../selector'
 import { simplify } from '../simplify'
 
 test('simplify returns the original condition for most selectors', t => {
@@ -17,6 +17,8 @@ test('simplify creates complements for negated comparisons', t => {
     t.deepEqual(simplify(not(gte(54))), lt(54))
     t.deepEqual(simplify(not(lt(125))), gte(125))
     t.deepEqual(simplify(not(lte(12))), gt(12))
+    t.deepEqual(simplify(not(neq(34))), equal(34))
+    t.deepEqual(simplify(not(equal(68))), neq(68))
 })
 
 test('simplify handles double negatives', t => {

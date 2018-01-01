@@ -1,5 +1,5 @@
 import test, { GenericTestContext } from 'ava'
-import { and, equal, gt, gte, lt, lte, not, or, Selector } from '../selector'
+import { and, equal, gt, gte, lt, lte, neq, not, or, Selector } from '../selector'
 
 const snap = (contents: Selector) =>
     function createSnap<T>(t: GenericTestContext<T>) {
@@ -40,6 +40,10 @@ test('lt creates a less than comparison condition', snap(
 
 test('lte creates a less than or equal comparison condition', snap(
     lte(50),
+))
+
+test('neq creates a non-sameness condition', snap(
+    neq(1),
 ))
 
 test('not creates a complement', snap(

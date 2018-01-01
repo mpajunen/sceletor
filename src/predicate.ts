@@ -15,6 +15,7 @@ export function predicate<T>(selector: Selector): Predicate<T> {
         case 'gte':
         case 'lt':
         case 'lte':
+        case 'neq':
             return createCompare(get, selector)
         case 'not': {
             const inner = predicate(selector.condition)
@@ -36,6 +37,8 @@ function createCompare<T>(get: Accessor<T>, selector: Compare): Predicate<T> {
             return (value: T) => get(value) < selector.value
         case 'lte':
             return (value: T) => get(value) <= selector.value
+        case 'neq':
+            return (value: T) => get(value) !== selector.value
     }
 }
 

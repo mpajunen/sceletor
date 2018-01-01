@@ -1,5 +1,5 @@
 import { combine } from './path'
-import { Compare, CompareKind, Not, not, Selector } from './selector'
+import { CompareKind, Not, not, Selector } from './selector'
 
 export function simplify(selector: Selector): Selector {
     return trySimplify(selector)
@@ -14,6 +14,7 @@ function trySimplify(selector: Selector): Selector {
         case 'gte':
         case 'lt':
         case 'lte':
+        case 'neq':
             return selector
         case 'not':
             return simplifyNot(selector)
@@ -25,16 +26,18 @@ function simplifyNot(selector: Not): Selector {
 
     switch (inner.kind) {
         case 'and':
-        case 'equal':
         case 'or':
             return selector
         case 'gt':
         case 'gte':
+        case 'equal':
         case 'lt':
         case 'lte':
+        case 'neq':
             return {
-                ...complement(inner),
+                kind: compareComplements[inner.kind],
                 path: combine(selector.path, inner.path),
+                value: inner.value,
             }
         case 'not':
             return {
@@ -45,20 +48,10 @@ function simplifyNot(selector: Not): Selector {
 }
 
 const compareComplements: Record<CompareKind, CompareKind> = {
-    equal: 'equal', // Not really
+    equal: 'neq',
     gt: 'lte',
     gte: 'lt',
     lt: 'gte',
     lte: 'gt',
-}
-
-function complement(selector: Compare): Selector {
-    if (selector.kind === 'equal') {
-        return not(selector)
-    }
-
-    return {
-        ...selector,
-        kind: compareComplements[selector.kind],
-    }
+    neq: 'equal',
 }
