@@ -7,7 +7,9 @@ export function simplify(selector: Selector): Selector {
 
 function trySimplify(selector: Selector): Selector {
     switch (selector.kind) {
+        case 'allOf':
         case 'and':
+        case 'anyOf':
         case 'or':
         case 'equal':
         case 'gt':
@@ -25,7 +27,9 @@ function simplifyNot(selector: Not): Selector {
     const inner = selector.condition
 
     switch (inner.kind) {
+        case 'allOf':
         case 'and':
+        case 'anyOf':
         case 'or':
             return selector
         case 'gt':

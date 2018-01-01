@@ -1,5 +1,5 @@
 import { Accessor, accessor } from './path'
-import { Compare, Logical, Selector } from './selector'
+import { Collection, Compare, Logical, Selector } from './selector'
 
 type Predicate<T> = (value: T) => boolean
 
@@ -7,6 +7,9 @@ export function predicate<T>(selector: Selector): Predicate<T> {
     const get = accessor(selector.path)
 
     switch (selector.kind) {
+        case 'allOf':
+        case 'anyOf':
+            return createCollection(get, selector)
         case 'and':
         case 'or':
             return createLogical(get, selector)
@@ -22,6 +25,29 @@ export function predicate<T>(selector: Selector): Predicate<T> {
 
             return (value: T) => !inner(get(value))
         }
+    }
+}
+
+function createCollection<T>(get: Accessor<T>, selector: Collection): Predicate<T> {
+    const [start, callback] = createCollectionComponents(selector)
+
+    return function select<U>(value: T) {
+        const collectionValues: U[] = get(value) || []
+
+        return collectionValues.reduce(callback, start)
+    }
+}
+
+type CollectionComponents<T> = [boolean, (accumulated: boolean, current: T) => boolean]
+
+function createCollectionComponents<T>(selector: Collection): CollectionComponents<T> {
+    const inner: Predicate<T> = predicate(selector.condition)
+
+    switch (selector.kind) {
+        case 'allOf':
+            return [true, (accumulated: boolean, current: T) => accumulated && inner(current)]
+        case 'anyOf':
+            return [false, (accumulated: boolean, current: T) => accumulated || inner(current)]
     }
 }
 

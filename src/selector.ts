@@ -1,14 +1,35 @@
 import { Path, PathStep } from './path'
 
 export type Kind =
+    | CollectionKind
     | CompareKind
     | LogicalKind
     | 'not'
 
 export type Selector =
+    | Collection
     | Compare
     | Logical
     | Not
+
+export type CollectionKind =
+    | 'allOf'
+    | 'anyOf'
+
+export interface Collection {
+    kind: CollectionKind
+    path: Path
+    condition: Selector
+}
+
+const collection = (kind: CollectionKind) => (condition: Selector, path: Path | PathStep = []): Collection => ({
+    kind,
+    path: Array.isArray(path) ? path : [path],
+    condition,
+})
+
+export const allOf = collection('allOf')
+export const anyOf = collection('anyOf')
 
 export type Comparable =
     | boolean

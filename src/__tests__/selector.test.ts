@@ -1,10 +1,14 @@
 import test, { GenericTestContext } from 'ava'
-import { and, equal, gt, gte, lt, lte, neq, not, or, Selector } from '../selector'
+import { allOf, and, equal, gt, gte, lt, lte, neq, not, or, Selector } from '../selector'
 
 const snap = (contents: Selector) =>
     function createSnap<T>(t: GenericTestContext<T>) {
         t.snapshot(contents)
     }
+
+test('allOf creates conditions where every value must match', snap(
+    allOf(equal(8)),
+))
 
 test('and combines conditions all of which must apply', snap(
     and([gt(5), lt(10)]),
@@ -16,6 +20,10 @@ test('and combines conditions of different properties', snap(
 
 test('and combines conditions with nested paths', snap(
     and([equal(3, 'foo'), gt(5, 'bar')], 'baz'),
+))
+
+test('anyOf creates conditions where at least one value must match', snap(
+    allOf(equal(8)),
 ))
 
 test('equal creates a sameness condition', snap(
