@@ -16,6 +16,11 @@ export function predicate<T>(selector: Selector): Predicate<T> {
         case 'lt':
         case 'lte':
             return createCompare(get, selector)
+        case 'not': {
+            const inner = predicate(selector.condition)
+
+            return (value: T) => !inner(get(value))
+        }
     }
 }
 

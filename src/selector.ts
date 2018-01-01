@@ -3,10 +3,12 @@ import { Path } from './path'
 export type Kind =
     | CompareKind
     | LogicalKind
+    | 'not'
 
 export type Selector =
     | Compare
     | Logical
+    | Not
 
 export type Comparable =
     | boolean
@@ -56,3 +58,15 @@ const logical = (kind: LogicalKind) => (conditions: Selector[], path?: Path): Lo
 
 export const and = logical('and')
 export const or = logical('or')
+
+export interface Not {
+    kind: 'not'
+    path?: Path
+    condition: Selector
+}
+
+export const not = (condition: Selector, path?: Path): Not => ({
+    kind: 'not',
+    path,
+    condition,
+})

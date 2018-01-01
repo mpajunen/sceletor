@@ -1,6 +1,6 @@
 import test from 'ava'
 import { predicate } from '../predicate'
-import { and, equal, gt, gte, lt, lte, or } from '../selector'
+import { and, equal, gt, gte, lt, lte, not, or } from '../selector'
 
 test('and combines conditions all of which must apply', t => {
     const isBetweenFiveAndTen = predicate(
@@ -80,6 +80,14 @@ test('lte creates a less than or equal comparison condition', t => {
     t.true(isFiftyOrUnder(40))
     t.true(isFiftyOrUnder(50))
     t.false(isFiftyOrUnder(60))
+})
+
+test('not creates a complement', t => {
+    const isThirtyOrUnder = predicate(not(gt(30)))
+
+    t.true(isThirtyOrUnder(20))
+    t.true(isThirtyOrUnder(30))
+    t.false(isThirtyOrUnder(40))
 })
 
 test('or combines conditions at least one of which must apply', t => {
