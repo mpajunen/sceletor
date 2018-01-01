@@ -1,4 +1,4 @@
-import { Path } from './path'
+import { Path, PathStep } from './path'
 
 export type Kind =
     | CompareKind
@@ -24,13 +24,13 @@ export type CompareKind =
 
 export interface Compare {
     kind: CompareKind
-    path?: Path
+    path: Path
     value: Comparable
 }
 
-const compare = (kind: CompareKind) => (value: Comparable, path?: Path): Compare => ({
+const compare = (kind: CompareKind) => (value: Comparable, path: Path | PathStep = []): Compare => ({
     kind,
-    path,
+    path: Array.isArray(path) ? path : [path],
     value,
 })
 
@@ -46,13 +46,13 @@ export type LogicalKind =
 
 export interface Logical {
     kind: LogicalKind
-    path?: Path
+    path: Path
     conditions: Selector[]
 }
 
-const logical = (kind: LogicalKind) => (conditions: Selector[], path?: Path): Logical => ({
+const logical = (kind: LogicalKind) => (conditions: Selector[], path: Path | PathStep = []): Logical => ({
     kind,
-    path,
+    path: Array.isArray(path) ? path : [path],
     conditions,
 })
 
@@ -61,12 +61,12 @@ export const or = logical('or')
 
 export interface Not {
     kind: 'not'
-    path?: Path
+    path: Path
     condition: Selector
 }
 
-export const not = (condition: Selector, path?: Path): Not => ({
+export const not = (condition: Selector, path: Path | PathStep = []): Not => ({
     kind: 'not',
-    path,
+    path: Array.isArray(path) ? path : [path],
     condition,
 })

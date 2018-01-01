@@ -1,10 +1,10 @@
 export type Accessor<T> = (value: T) => any // TODO: Proper types?
 
-export type Path = PathStep | PathStep[]
+export type Path = PathStep[]
 
 export type PathStep = string // TODO: Add array support / numeric steps?
 
-export function accessor<T>(path?: Path): Accessor<T> {
+export function accessor<T>(path?: Path | PathStep): Accessor<T> {
     if (path === undefined) {
         return identity
     }
