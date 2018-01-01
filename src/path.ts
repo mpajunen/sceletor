@@ -14,6 +14,10 @@ export function accessor<T>(path?: Path | PathStep): Accessor<T> {
     return (value: T) => pathArray.reduce(getProperty, value)
 }
 
+export function combine(first: Path, ...rest: Path[]): Path {
+    return first.concat(...rest)
+}
+
 function getProperty<T, K extends keyof T>(value: T | undefined, name: K): T[K] | undefined {
     return value && value[name]
 }
