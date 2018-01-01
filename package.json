@@ -1,0 +1,29 @@
+{
+  "name": "sceletor",
+  "version": "0.1.0",
+  "description": "Selector library",
+  "main": "index.js",
+  "scripts": {
+    "lint": "tslint --config tslint.json --project tsconfig.json 'src/**/*.ts'",
+    "lint-fix": "npm run lint -- --fix",
+    "test": "tsc && ava",
+    "update-snap": "tsc && ava --update-snapshots",
+    "watch-ts": "tsc -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mpajunen/sceletor.git"
+  },
+  "author": "Mikael Pajunen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mpajunen/sceletor/issues"
+  },
+  "homepage": "https://github.com/mpajunen/sceletor#readme",
+  "devDependencies": {
+    "ava": "^0.24.0",
+    "ts-node": "^4.1.0",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
+  }
+}
