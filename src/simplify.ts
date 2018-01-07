@@ -1,4 +1,4 @@
-import { CompareKind, Condition, Not } from './condition'
+import { always, CompareKind, Condition, never, Not } from './condition'
 import { combine } from './path'
 
 export function simplify(condition: Condition): Condition {
@@ -8,6 +8,7 @@ export function simplify(condition: Condition): Condition {
 function trySimplify(condition: Condition): Condition {
     switch (condition.kind) {
         case 'allOf':
+        case 'always':
         case 'and':
         case 'anyOf':
         case 'or':
@@ -17,6 +18,7 @@ function trySimplify(condition: Condition): Condition {
         case 'lt':
         case 'lte':
         case 'neq':
+        case 'never':
             return condition
         case 'not':
             return simplifyNot(condition)
@@ -32,6 +34,8 @@ function simplifyNot(condition: Not): Condition {
         case 'anyOf':
         case 'or':
             return condition
+        case 'always':
+            return never
         case 'gt':
         case 'gte':
         case 'equal':
@@ -43,6 +47,8 @@ function simplifyNot(condition: Not): Condition {
                 path: combine(condition.path, item.path),
                 value: item.value,
             }
+        case 'never':
+            return always
         case 'not':
             return {
                 ...item.item,

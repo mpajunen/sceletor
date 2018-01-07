@@ -1,16 +1,35 @@
 import { Path, PathStep } from './path'
 
 export type Kind =
+    | BaseKind
     | CollectionKind
     | CompareKind
     | LogicalKind
     | 'not'
 
 export type Condition =
+    | Base
     | Collection
     | Compare
     | Logical
     | Not
+
+export type BaseKind =
+    | 'always'
+    | 'never'
+
+export interface Base {
+    kind: BaseKind
+    path: Path // Not used, but helpful for similarity with other conditions.
+}
+
+const base = (kind: BaseKind): Base => ({
+    kind,
+    path: [],
+})
+
+export const always = base('always')
+export const never = base('never')
 
 export type CollectionKind =
     | 'allOf'

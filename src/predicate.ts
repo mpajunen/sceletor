@@ -10,6 +10,8 @@ export function predicate<T>(condition: Condition): Predicate<T> {
         case 'allOf':
         case 'anyOf':
             return createCollection(get, condition)
+        case 'always':
+            return () => true
         case 'and':
         case 'or':
             return createLogical(get, condition)
@@ -20,6 +22,8 @@ export function predicate<T>(condition: Condition): Predicate<T> {
         case 'lte':
         case 'neq':
             return createCompare(get, condition)
+        case 'never':
+            return () => false
         case 'not': {
             const inner = predicate(condition.item)
 

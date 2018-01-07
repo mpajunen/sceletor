@@ -1,5 +1,5 @@
 import test, { GenericTestContext } from 'ava'
-import { allOf, and, Condition, equal, gt, gte, lt, lte, neq, not, or } from '../condition'
+import { allOf, always, and, Condition, equal, gt, gte, lt, lte, neq, never, not, or } from '../condition'
 
 const snap = (contents: Condition) =>
     function createSnap<T>(t: GenericTestContext<T>) {
@@ -8,6 +8,10 @@ const snap = (contents: Condition) =>
 
 test('allOf creates collection conditions where every value must match', snap(
     allOf(equal(8)),
+))
+
+test('always is a condition that always matches', snap(
+    always,
 ))
 
 test('and combines conditions all of which must apply', snap(
@@ -52,6 +56,10 @@ test('lte creates a less than or equal comparison condition', snap(
 
 test('neq creates a non-sameness condition', snap(
     neq(1),
+))
+
+test('never is a condition that never matches', snap(
+    never,
 ))
 
 test('not creates a complement condition', snap(

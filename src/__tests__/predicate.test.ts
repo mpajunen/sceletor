@@ -1,5 +1,5 @@
 import test from 'ava'
-import { allOf, and, anyOf, equal, gt, gte, lt, lte, neq, not, or } from '../condition'
+import { allOf, always, and, anyOf, equal, gt, gte, lt, lte, neq, never, not, or } from '../condition'
 import { predicate } from '../predicate'
 
 test('allOf creates conditions where every value must match', t => {
@@ -26,6 +26,15 @@ test('allOf conditions work with properties', t => {
     t.false(everyFooBarEight({ foo: [{ bar: 1 }] }))
     t.true(everyFooBarEight({ foo: [{ bar: 8 }] }))
     t.true(everyFooBarEight({ baz: [{ bar: 8 }] }))
+})
+
+test('always is a condition that always matches', t => {
+    const isTrue = predicate(always)
+
+    t.true(isTrue(true))
+    t.true(isTrue(false))
+    t.true(isTrue('hello'))
+    t.true(isTrue({ foo: 'bar' }))
 })
 
 test('and combines conditions all of which must apply', t => {
@@ -129,6 +138,15 @@ test('neq creates a non-sameness condition', t => {
     t.false(isNotOne(1))
     t.true(isNotOne(2))
     t.true(isNotOne('1'))
+})
+
+test('never is a condition that never matches', t => {
+    const isFalse = predicate(never)
+
+    t.false(isFalse(true))
+    t.false(isFalse(false))
+    t.false(isFalse('hello'))
+    t.false(isFalse({ foo: 'bar' }))
 })
 
 test('not creates a complement condition', t => {

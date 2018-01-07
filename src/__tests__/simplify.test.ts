@@ -1,5 +1,5 @@
 import test from 'ava'
-import { and, equal, gt, gte, lt, lte, neq, not, or } from '../condition'
+import { always, and, equal, gt, gte, lt, lte, neq, never, not, or } from '../condition'
 import { simplify } from '../simplify'
 
 test('simplify returns the original condition for most kinds', t => {
@@ -10,6 +10,11 @@ test('simplify returns the original condition for most kinds', t => {
     t.deepEqual(simplify(gt(15)), gt(15))
     t.deepEqual(simplify(fooOneAndBarTwo), fooOneAndBarTwo)
     t.deepEqual(simplify(underFiveOrOverTen), underFiveOrOverTen)
+})
+
+test('simplify creates complements for negated base conditions', t => {
+    t.deepEqual(simplify(not(always)), never)
+    t.deepEqual(simplify(not(never)), always)
 })
 
 test('simplify creates complements for negated comparisons', t => {
