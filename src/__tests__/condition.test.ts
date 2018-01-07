@@ -1,12 +1,12 @@
 import test, { GenericTestContext } from 'ava'
-import { allOf, and, equal, gt, gte, lt, lte, neq, not, or, Selector } from '../selector'
+import { allOf, and, Condition, equal, gt, gte, lt, lte, neq, not, or } from '../condition'
 
-const snap = (contents: Selector) =>
+const snap = (contents: Condition) =>
     function createSnap<T>(t: GenericTestContext<T>) {
         t.snapshot(contents)
     }
 
-test('allOf creates conditions where every value must match', snap(
+test('allOf creates collection conditions where every value must match', snap(
     allOf(equal(8)),
 ))
 
@@ -54,7 +54,7 @@ test('neq creates a non-sameness condition', snap(
     neq(1),
 ))
 
-test('not creates a complement', snap(
+test('not creates a complement condition', snap(
     not(gt(30)),
 ))
 

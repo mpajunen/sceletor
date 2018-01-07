@@ -1,8 +1,8 @@
 import test from 'ava'
-import { and, equal, gt, gte, lt, lte, neq, not, or } from '../selector'
+import { and, equal, gt, gte, lt, lte, neq, not, or } from '../condition'
 import { simplify } from '../simplify'
 
-test('simplify returns the original condition for most selectors', t => {
+test('simplify returns the original condition for most kinds', t => {
     const fooOneAndBarTwo = and([equal(1, 'foo'), equal(2, 'bar')])
     const underFiveOrOverTen = or([lt(5), gt(10)])
 

@@ -1,12 +1,12 @@
+import { CompareKind, Condition, Not } from './condition'
 import { combine } from './path'
-import { CompareKind, Not, not, Selector } from './selector'
 
-export function simplify(selector: Selector): Selector {
-    return trySimplify(selector)
+export function simplify(condition: Condition): Condition {
+    return trySimplify(condition)
 }
 
-function trySimplify(selector: Selector): Selector {
-    switch (selector.kind) {
+function trySimplify(condition: Condition): Condition {
+    switch (condition.kind) {
         case 'allOf':
         case 'and':
         case 'anyOf':
@@ -17,21 +17,21 @@ function trySimplify(selector: Selector): Selector {
         case 'lt':
         case 'lte':
         case 'neq':
-            return selector
+            return condition
         case 'not':
-            return simplifyNot(selector)
+            return simplifyNot(condition)
     }
 }
 
-function simplifyNot(selector: Not): Selector {
-    const inner = selector.condition
+function simplifyNot(condition: Not): Condition {
+    const item = condition.item
 
-    switch (inner.kind) {
+    switch (item.kind) {
         case 'allOf':
         case 'and':
         case 'anyOf':
         case 'or':
-            return selector
+            return condition
         case 'gt':
         case 'gte':
         case 'equal':
@@ -39,14 +39,14 @@ function simplifyNot(selector: Not): Selector {
         case 'lte':
         case 'neq':
             return {
-                kind: compareComplements[inner.kind],
-                path: combine(selector.path, inner.path),
-                value: inner.value,
+                kind: compareComplements[item.kind],
+                path: combine(condition.path, item.path),
+                value: item.value,
             }
         case 'not':
             return {
-                ...inner.condition,
-                path: combine(selector.path, inner.path, inner.condition.path),
+                ...item.item,
+                path: combine(condition.path, item.path, item.item.path),
             }
     }
 }

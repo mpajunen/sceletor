@@ -1,6 +1,6 @@
 import test from 'ava'
+import { allOf, and, anyOf, equal, gt, gte, lt, lte, neq, not, or } from '../condition'
 import { predicate } from '../predicate'
-import { allOf, and, anyOf, equal, gt, gte, lt, lte, neq, not, or } from '../selector'
 
 test('allOf creates conditions where every value must match', t => {
     const allEight = predicate(allOf(equal(8)))
@@ -131,7 +131,7 @@ test('neq creates a non-sameness condition', t => {
     t.true(isNotOne('1'))
 })
 
-test('not creates a complement', t => {
+test('not creates a complement condition', t => {
     const isThirtyOrUnder = predicate(not(gt(30)))
 
     t.true(isThirtyOrUnder(20))

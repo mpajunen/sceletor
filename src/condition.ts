@@ -6,7 +6,7 @@ export type Kind =
     | LogicalKind
     | 'not'
 
-export type Selector =
+export type Condition =
     | Collection
     | Compare
     | Logical
@@ -19,13 +19,13 @@ export type CollectionKind =
 export interface Collection {
     kind: CollectionKind
     path: Path
-    condition: Selector
+    item: Condition
 }
 
-const collection = (kind: CollectionKind) => (condition: Selector, path: Path | PathStep = []): Collection => ({
+const collection = (kind: CollectionKind) => (item: Condition, path: Path | PathStep = []): Collection => ({
     kind,
     path: Array.isArray(path) ? path : [path],
-    condition,
+    item,
 })
 
 export const allOf = collection('allOf')
@@ -70,13 +70,13 @@ export type LogicalKind =
 export interface Logical {
     kind: LogicalKind
     path: Path
-    conditions: Selector[]
+    items: Condition[]
 }
 
-const logical = (kind: LogicalKind) => (conditions: Selector[], path: Path | PathStep = []): Logical => ({
+const logical = (kind: LogicalKind) => (items: Condition[], path: Path | PathStep = []): Logical => ({
     kind,
     path: Array.isArray(path) ? path : [path],
-    conditions,
+    items,
 })
 
 export const and = logical('and')
@@ -85,11 +85,11 @@ export const or = logical('or')
 export interface Not {
     kind: 'not'
     path: Path
-    condition: Selector
+    item: Condition
 }
 
-export const not = (condition: Selector, path: Path | PathStep = []): Not => ({
+export const not = (item: Condition, path: Path | PathStep = []): Not => ({
     kind: 'not',
     path: Array.isArray(path) ? path : [path],
-    condition,
+    item,
 })

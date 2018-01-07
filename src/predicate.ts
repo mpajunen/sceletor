@@ -1,35 +1,35 @@
+import { Collection, Compare, Condition, Logical } from './condition'
 import { Accessor, accessor } from './path'
-import { Collection, Compare, Logical, Selector } from './selector'
 
 type Predicate<T> = (value: T) => boolean
 
-export function predicate<T>(selector: Selector): Predicate<T> {
-    const get = accessor(selector.path)
+export function predicate<T>(condition: Condition): Predicate<T> {
+    const get = accessor(condition.path)
 
-    switch (selector.kind) {
+    switch (condition.kind) {
         case 'allOf':
         case 'anyOf':
-            return createCollection(get, selector)
+            return createCollection(get, condition)
         case 'and':
         case 'or':
-            return createLogical(get, selector)
+            return createLogical(get, condition)
         case 'equal':
         case 'gt':
         case 'gte':
         case 'lt':
         case 'lte':
         case 'neq':
-            return createCompare(get, selector)
+            return createCompare(get, condition)
         case 'not': {
-            const inner = predicate(selector.condition)
+            const inner = predicate(condition.item)
 
             return (value: T) => !inner(get(value))
         }
     }
 }
 
-function createCollection<T>(get: Accessor<T>, selector: Collection): Predicate<T> {
-    const [start, callback] = createCollectionComponents(selector)
+function createCollection<T>(get: Accessor<T>, condition: Collection): Predicate<T> {
+    const [start, callback] = createCollectionComponents(condition)
 
     return function select<U>(value: T) {
         const collectionValues: U[] = get(value) || []
@@ -40,10 +40,10 @@ function createCollection<T>(get: Accessor<T>, selector: Collection): Predicate<
 
 type CollectionComponents<T> = [boolean, (accumulated: boolean, current: T) => boolean]
 
-function createCollectionComponents<T>(selector: Collection): CollectionComponents<T> {
-    const inner: Predicate<T> = predicate(selector.condition)
+function createCollectionComponents<T>(condition: Collection): CollectionComponents<T> {
+    const inner: Predicate<T> = predicate(condition.item)
 
-    switch (selector.kind) {
+    switch (condition.kind) {
         case 'allOf':
             return [true, (accumulated: boolean, current: T) => accumulated && inner(current)]
         case 'anyOf':
@@ -51,30 +51,30 @@ function createCollectionComponents<T>(selector: Collection): CollectionComponen
     }
 }
 
-function createCompare<T>(get: Accessor<T>, selector: Compare): Predicate<T> {
-    switch (selector.kind) {
+function createCompare<T>(get: Accessor<T>, condition: Compare): Predicate<T> {
+    switch (condition.kind) {
         case 'equal':
-            return (value: T) => get(value) === selector.value
+            return (value: T) => get(value) === condition.value
         case 'gt':
-            return (value: T) => get(value) > selector.value
+            return (value: T) => get(value) > condition.value
         case 'gte':
-            return (value: T) => get(value) >= selector.value
+            return (value: T) => get(value) >= condition.value
         case 'lt':
-            return (value: T) => get(value) < selector.value
+            return (value: T) => get(value) < condition.value
         case 'lte':
-            return (value: T) => get(value) <= selector.value
+            return (value: T) => get(value) <= condition.value
         case 'neq':
-            return (value: T) => get(value) !== selector.value
+            return (value: T) => get(value) !== condition.value
     }
 }
 
-function createLogical<T>(get: Accessor<T>, selector: Logical): Predicate<T> {
-    const conditions = selector.conditions.map(predicate)
+function createLogical<T>(get: Accessor<T>, condition: Logical): Predicate<T> {
+    const conditions = condition.items.map(predicate)
 
     return function select<U>(value: T) {
         const subValue: U = get(value)
 
-        return selector.kind === 'and'
+        return condition.kind === 'and'
             ? conditions.reduce(
                 (accumulated: boolean, current: Predicate<U>) => accumulated && current(subValue),
                 true,
