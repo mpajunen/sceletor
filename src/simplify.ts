@@ -1,4 +1,4 @@
-import { always, CompareKind, Condition, never, Not } from './condition'
+import { always, BaseKind, CompareKind, Condition, Logical, LogicalKind, never, Not } from './condition'
 import { combine } from './path'
 
 export function simplify(condition: Condition): Condition {
@@ -9,9 +9,7 @@ function trySimplify(condition: Condition): Condition {
     switch (condition.kind) {
         case 'allOf':
         case 'always':
-        case 'and':
         case 'anyOf':
-        case 'or':
         case 'equal':
         case 'gt':
         case 'gte':
@@ -20,8 +18,57 @@ function trySimplify(condition: Condition): Condition {
         case 'neq':
         case 'never':
             return condition
+        case 'and':
+        case 'or':
+            return simplifyLogical(condition)
         case 'not':
             return simplifyNot(condition)
+    }
+}
+
+interface LogicalRule {
+    unify: BaseKind
+    drop: BaseKind
+}
+
+const logicalRules: Record<LogicalKind, LogicalRule> = {
+    and: {
+        unify: 'never',
+        drop: 'always',
+    },
+    or: {
+        unify: 'always',
+        drop: 'never',
+    },
+}
+
+function simplifyLogical(condition: Logical): Condition {
+    const { unify, drop } = logicalRules[condition.kind]
+
+    const items = condition.items.filter(i => i.kind !== drop)
+
+    if (items.length === 0) {
+        return {
+            kind: drop,
+            path: [],
+        }
+    } else if (items.find(i => i.kind === unify) !== undefined) {
+        return {
+            kind: unify,
+            path: [],
+        }
+    } else if (items.length === 1) {
+        const { path, ...item } = items[0]
+
+        return {
+            ...item,
+            path: combine(condition.path, path),
+        }
+    } else {
+        return {
+            ...condition,
+            items,
+        }
     }
 }
 
