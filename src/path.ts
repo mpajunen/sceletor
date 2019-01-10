@@ -11,7 +11,7 @@ export function accessor<T>(path?: Path | PathStep): Accessor<T> {
 
     const pathArray = Array.isArray(path) ? path : [path]
 
-    return (value: T) => pathArray.reduce(getProperty, value)
+    return (value: T) => (pathArray as any[]).reduce(getProperty, value)
 }
 
 export function combine(first: Path, ...rest: Path[]): Path {

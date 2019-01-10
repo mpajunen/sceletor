@@ -1,8 +1,8 @@
-import test, { GenericTestContext } from 'ava'
+import test, { ExecutionContext } from 'ava'
 import { allOf, always, and, Condition, equal, gt, gte, lt, lte, neq, never, not, or } from '../condition'
 
 const snap = (contents: Condition) =>
-    function createSnap<T>(t: GenericTestContext<T>) {
+    function createSnap<T>(t: ExecutionContext<T>) {
         t.snapshot(contents)
     }
 
