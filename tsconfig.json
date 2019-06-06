@@ -1,13 +1,9 @@
 {
   "compilerOptions": {
-    "alwaysStrict": true,
     "module": "commonjs",
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "outDir": "dist",
+    "outDir": "lib",
     "sourceMap": true,
-    "strictFunctionTypes": true,
-    "strictNullChecks": true,
+    "strict": true,
     "target": "es2016"
   }
 }
