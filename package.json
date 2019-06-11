@@ -1,15 +1,22 @@
 {
-  "name": "sceletor",
+  "name": "@mpajunen/sceletor",
   "version": "0.1.0",
-  "description": "Selector library",
-  "main": "index.js",
+  "description": "A declarative selector library",
+  "private": false,
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "lint": "tslint --config tslint.json --project tsconfig.json 'src/**/*.ts'",
     "lint-fix": "npm run lint -- --fix",
     "test": "tsc && ava",
     "update-snap": "tsc && ava --update-snapshots",
     "watch-ts": "tsc -w"
   },
+  "files": [
+    "lib",
+    "src"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mpajunen/sceletor.git"
