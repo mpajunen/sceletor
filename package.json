@@ -15,14 +15,15 @@
   },
   "files": [
     "lib",
-    "src"
+    "src",
+    "LICENSE"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mpajunen/sceletor.git"
   },
   "author": "Mikael Pajunen",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/mpajunen/sceletor/issues"
   },
