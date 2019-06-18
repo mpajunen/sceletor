@@ -83,8 +83,8 @@ export const lte = compare('lte')
 export const neq = compare('neq')
 
 export type LogicalKind =
-    | 'and'
-    | 'or'
+    | 'every'
+    | 'some'
 
 export interface Logical {
     kind: LogicalKind
@@ -98,8 +98,8 @@ const logical = (kind: LogicalKind) => (items: Condition[], path: Path | PathSte
     items,
 })
 
-export const and = logical('and')
-export const or = logical('or')
+export const every = logical('every')
+export const some = logical('some')
 
 export interface Not {
     kind: 'not'

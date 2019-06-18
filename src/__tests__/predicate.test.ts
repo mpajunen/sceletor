@@ -1,5 +1,5 @@
 import test from 'ava'
-import { allOf, always, and, anyOf, equal, gt, gte, lt, lte, neq, never, not, or } from '../condition'
+import { allOf, always, anyOf, equal, every, gt, gte, lt, lte, neq, never, not, some } from '../condition'
 import { predicate } from '../predicate'
 
 test('allOf creates conditions where every value must match', t => {
@@ -37,9 +37,9 @@ test('always is a condition that always matches', t => {
     t.true(isTrue({ foo: 'bar' }))
 })
 
-test('and combines conditions all of which must apply', t => {
+test('every combines conditions all of which must apply', t => {
     const isBetweenFiveAndTen = predicate(
-        and([gt(5), lt(10)]),
+        every([gt(5), lt(10)]),
     )
 
     t.false(isBetweenFiveAndTen(2))
@@ -47,9 +47,9 @@ test('and combines conditions all of which must apply', t => {
     t.false(isBetweenFiveAndTen(15))
 })
 
-test('and combines conditions of different properties', t => {
+test('every combines conditions of different properties', t => {
     const isFooOneAndBarTwo = predicate(
-        and([equal(1, 'foo'), equal(2, 'bar')]),
+        every([equal(1, 'foo'), equal(2, 'bar')]),
     )
 
     t.true(isFooOneAndBarTwo({ foo: 1, bar: 2 }))
@@ -58,9 +58,9 @@ test('and combines conditions of different properties', t => {
     t.false(isFooOneAndBarTwo({}))
 })
 
-test('and combines conditions with nested paths', t => {
+test('every combines conditions with nested paths', t => {
     const condition = predicate(
-        and([equal(3, 'foo'), gt(5, 'bar')], 'baz'),
+        every([equal(3, 'foo'), gt(5, 'bar')], 'baz'),
     )
 
     t.true(condition({ baz: { foo: 3, bar: 10 } }))
@@ -157,8 +157,8 @@ test('not creates a complement condition', t => {
     t.false(isThirtyOrUnder(40))
 })
 
-test('or combines conditions at least one of which must apply', t => {
-    const isUnderFiveOrOverTen = predicate(or([lt(5), gt(10)]))
+test('some combines conditions at least one of which must apply', t => {
+    const isUnderFiveOrOverTen = predicate(some([lt(5), gt(10)]))
 
     t.true(isUnderFiveOrOverTen(2))
     t.false(isUnderFiveOrOverTen(7))

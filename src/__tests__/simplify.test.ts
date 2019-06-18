@@ -1,10 +1,10 @@
 import test from 'ava'
-import { always, and, equal, gt, gte, lt, lte, neq, never, not, or } from '../condition'
+import { always, equal, every, gt, gte, lt, lte, neq, never, not, some } from '../condition'
 import { simplify } from '../simplify'
 
 test('simplify returns the original condition for most kinds', t => {
-    const fooOneAndBarTwo = and([equal(1, 'foo'), equal(2, 'bar')])
-    const underFiveOrOverTen = or([lt(5), gt(10)])
+    const fooOneAndBarTwo = every([equal(1, 'foo'), equal(2, 'bar')])
+    const underFiveOrOverTen = some([lt(5), gt(10)])
 
     t.deepEqual(simplify(equal(8)), equal(8))
     t.deepEqual(simplify(gt(15)), gt(15))
@@ -39,19 +39,19 @@ test('simplify combines paths correctly', t => {
 })
 
 test('simplify removes trivial logical conditions', t => {
-    t.deepEqual(simplify(and([equal(8)])), equal(8))
-    t.deepEqual(simplify(and([always])), always)
-    t.deepEqual(simplify(and([never])), never)
-    t.deepEqual(simplify(or([equal(8)])), equal(8))
-    t.deepEqual(simplify(or([always])), always)
-    t.deepEqual(simplify(or([never])), never)
+    t.deepEqual(simplify(every([equal(8)])), equal(8))
+    t.deepEqual(simplify(every([always])), always)
+    t.deepEqual(simplify(every([never])), never)
+    t.deepEqual(simplify(some([equal(8)])), equal(8))
+    t.deepEqual(simplify(some([always])), always)
+    t.deepEqual(simplify(some([never])), never)
 })
 
 test('simplify reduces nearly trivial logical conditions', t => {
-    t.deepEqual(simplify(and([gt(5), lt(15), always])), and([gt(5), lt(15)]))
-    t.deepEqual(simplify(and([gt(5), lt(15), never])), never)
-    t.deepEqual(simplify(and([equal(8), always])), equal(8))
-    t.deepEqual(simplify(or([gt(5), lt(15), always])), always)
-    t.deepEqual(simplify(or([gt(5), lt(15), never])), or([gt(5), lt(15)]))
-    t.deepEqual(simplify(or([equal(8), never])), equal(8))
+    t.deepEqual(simplify(every([gt(5), lt(15), always])), every([gt(5), lt(15)]))
+    t.deepEqual(simplify(every([gt(5), lt(15), never])), never)
+    t.deepEqual(simplify(every([equal(8), always])), equal(8))
+    t.deepEqual(simplify(some([gt(5), lt(15), always])), always)
+    t.deepEqual(simplify(some([gt(5), lt(15), never])), some([gt(5), lt(15)]))
+    t.deepEqual(simplify(some([equal(8), never])), equal(8))
 })

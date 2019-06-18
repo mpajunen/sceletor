@@ -1,5 +1,5 @@
 import test, { ExecutionContext } from 'ava'
-import { allOf, always, and, Condition, equal, gt, gte, lt, lte, neq, never, not, or } from '../condition'
+import { allOf, always, Condition, equal, every, gt, gte, lt, lte, neq, never, not, some } from '../condition'
 
 const snap = (contents: Condition) =>
     function createSnap<T>(t: ExecutionContext<T>) {
@@ -14,16 +14,16 @@ test('always is a condition that always matches', snap(
     always,
 ))
 
-test('and combines conditions all of which must apply', snap(
-    and([gt(5), lt(10)]),
+test('every combines conditions all of which must apply', snap(
+    every([gt(5), lt(10)]),
 ))
 
-test('and combines conditions of different properties', snap(
-    and([equal(1, 'foo'), equal(2, 'bar')]),
+test('every combines conditions of different properties', snap(
+    every([equal(1, 'foo'), equal(2, 'bar')]),
 ))
 
-test('and combines conditions with nested paths', snap(
-    and([equal(3, 'foo'), gt(5, 'bar')], 'baz'),
+test('every combines conditions with nested paths', snap(
+    every([equal(3, 'foo'), gt(5, 'bar')], 'baz'),
 ))
 
 test('anyOf creates conditions where at least one value must match', snap(
@@ -66,6 +66,6 @@ test('not creates a complement condition', snap(
     not(gt(30)),
 ))
 
-test('or combines conditions at least one of which must apply', snap(
-    or([lt(5), gt(10)]),
+test('some combines conditions at least one of which must apply', snap(
+    some([lt(5), gt(10)]),
 ))

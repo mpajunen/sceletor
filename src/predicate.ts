@@ -12,8 +12,8 @@ export function predicate<T>(condition: Condition): Predicate<T> {
             return createCollection(get, condition)
         case 'always':
             return () => true
-        case 'and':
-        case 'or':
+        case 'every':
+        case 'some':
             return createLogical(get, condition)
         case 'equal':
         case 'gt':
@@ -78,7 +78,7 @@ function createLogical<T>(get: Accessor<T>, condition: Logical): Predicate<T> {
     return function select<U>(value: T) {
         const subValue: U = get(value)
 
-        return condition.kind === 'and'
+        return condition.kind === 'every'
             ? conditions.reduce(
                 (accumulated: boolean, current: Predicate<U>) => accumulated && current(subValue),
                 true,

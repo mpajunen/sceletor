@@ -18,8 +18,8 @@ function trySimplify(condition: Condition): Condition {
         case 'neq':
         case 'never':
             return condition
-        case 'and':
-        case 'or':
+        case 'every':
+        case 'some':
             return simplifyLogical(condition)
         case 'not':
             return simplifyNot(condition)
@@ -32,11 +32,11 @@ interface LogicalRule {
 }
 
 const logicalRules: Record<LogicalKind, LogicalRule> = {
-    and: {
+    every: {
         unify: 'never',
         drop: 'always',
     },
-    or: {
+    some: {
         unify: 'always',
         drop: 'never',
     },
@@ -77,9 +77,9 @@ function simplifyNot(condition: Not): Condition {
 
     switch (item.kind) {
         case 'allOf':
-        case 'and':
+        case 'every':
         case 'anyOf':
-        case 'or':
+        case 'some':
             return condition
         case 'always':
             return never
