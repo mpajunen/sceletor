@@ -1,4 +1,4 @@
-import { Collection, Compare, Condition, Logical } from './condition'
+import { Collection, Compare, Condition, IncludedIn, Logical } from './condition'
 import { Accessor, accessor } from './path'
 
 type Predicate<T> = (value: T) => boolean
@@ -18,6 +18,7 @@ export function predicate<T>(condition: Condition): Predicate<T> {
         case 'equal':
         case 'gt':
         case 'gte':
+        case 'includedIn':
         case 'lt':
         case 'lte':
         case 'neq':
@@ -55,7 +56,7 @@ function createCollectionComponents<T>(condition: Collection): CollectionCompone
     }
 }
 
-function createCompare<T>(get: Accessor<T>, condition: Compare): Predicate<T> {
+function createCompare<T>(get: Accessor<T>, condition: Compare | IncludedIn): Predicate<T> {
     switch (condition.kind) {
         case 'equal':
             return (value: T) => get(value) === condition.value
@@ -63,6 +64,8 @@ function createCompare<T>(get: Accessor<T>, condition: Compare): Predicate<T> {
             return (value: T) => get(value) > condition.value
         case 'gte':
             return (value: T) => get(value) >= condition.value
+        case 'includedIn':
+            return (value: T) => condition.values.includes(get(value))
         case 'lt':
             return (value: T) => get(value) < condition.value
         case 'lte':

@@ -13,6 +13,7 @@ function trySimplify(condition: Condition): Condition {
         case 'equal':
         case 'gt':
         case 'gte':
+        case 'includedIn':
         case 'lt':
         case 'lte':
         case 'neq':
@@ -79,6 +80,7 @@ function simplifyNot(condition: Not): Condition {
         case 'allOf':
         case 'every':
         case 'anyOf':
+        case 'includedIn':
         case 'some':
             return condition
         case 'always':

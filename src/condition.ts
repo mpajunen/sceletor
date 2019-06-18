@@ -5,6 +5,7 @@ export type Kind =
     | CollectionKind
     | CompareKind
     | LogicalKind
+    | 'includedIn'
     | 'not'
 
 export type Condition =
@@ -12,6 +13,7 @@ export type Condition =
     | Collection
     | Compare
     | Logical
+    | IncludedIn
     | Not
 
 export type BaseKind =
@@ -81,6 +83,18 @@ export const gte = compare('gte')
 export const lt = compare('lt')
 export const lte = compare('lte')
 export const neq = compare('neq')
+
+export interface IncludedIn {
+    kind: 'includedIn'
+    path: Path
+    values: Array<Comparable | undefined>
+}
+
+export const includedIn = (values: Array<Comparable | undefined>, path: Path | PathStep = []): IncludedIn => ({
+    kind: 'includedIn',
+    path: Array.isArray(path) ? path : [path],
+    values,
+})
 
 export type LogicalKind =
     | 'every'

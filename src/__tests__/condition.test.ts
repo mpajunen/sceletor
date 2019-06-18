@@ -1,5 +1,20 @@
 import test, { ExecutionContext } from 'ava'
-import { allOf, always, Condition, equal, every, gt, gte, lt, lte, neq, never, not, some } from '../condition'
+import {
+    allOf,
+    always,
+    Condition,
+    equal,
+    every,
+    gt,
+    gte,
+    includedIn,
+    lt,
+    lte,
+    neq,
+    never,
+    not,
+    some,
+} from '../condition'
 
 const snap = (contents: Condition) =>
     function createSnap<T>(t: ExecutionContext<T>) {
@@ -44,6 +59,10 @@ test('gt creates a greater than comparison condition', snap(
 
 test('gte creates a greater than or equal comparison condition', snap(
     gte(50),
+))
+
+test('includedIn creates a condition where the value must match one of the options', snap(
+    includedIn([1, 2, 3]),
 ))
 
 test('lt creates a less than comparison condition', snap(

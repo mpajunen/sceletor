@@ -1,5 +1,5 @@
 import test from 'ava'
-import { allOf, always, anyOf, equal, every, gt, gte, lt, lte, neq, never, not, some } from '../condition'
+import { allOf, always, anyOf, equal, every, gt, gte, includedIn, lt, lte, neq, never, not, some } from '../condition'
 import { predicate } from '../predicate'
 
 test('allOf creates conditions where every value must match', t => {
@@ -114,6 +114,17 @@ test('gte creates a greater than or equal comparison condition', t => {
     t.false(isFiftyOrOver(40))
     t.true(isFiftyOrOver(50))
     t.true(isFiftyOrOver(60))
+})
+
+test('includedIn creates a condition where the value must match one of the options', t => {
+    const isOneOrTwoOrThreeOrUndefined = predicate(includedIn([1, 2, 3, undefined]))
+
+    t.false(isOneOrTwoOrThreeOrUndefined(0))
+    t.true(isOneOrTwoOrThreeOrUndefined(1))
+    t.true(isOneOrTwoOrThreeOrUndefined(3))
+    t.false(isOneOrTwoOrThreeOrUndefined(5))
+    t.false(isOneOrTwoOrThreeOrUndefined(false))
+    t.true(isOneOrTwoOrThreeOrUndefined(undefined))
 })
 
 test('lt creates a less than comparison condition', t => {
