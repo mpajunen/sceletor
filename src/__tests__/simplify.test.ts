@@ -55,3 +55,10 @@ test('simplify reduces nearly trivial logical conditions', t => {
     t.deepEqual(simplify(some([gt(5), lt(15), never])), some([gt(5), lt(15)]))
     t.deepEqual(simplify(some([equal(8), never])), equal(8))
 })
+
+test('simplify spreads negated logical conditions', t => {
+    t.deepEqual(simplify(not(every([gt(5, 'foo'), lt(15, 'bar')]))), some([lte(5, 'foo'), gte(15, 'bar')]))
+    t.deepEqual(simplify(not(some([gt(5, 'foo'), lt(15, 'bar')]))), every([lte(5, 'foo'), gte(15, 'bar')]))
+    t.deepEqual(simplify(not(every([gt(5), lt(15)]))), some([lte(5), gte(15)]))
+    t.deepEqual(simplify(not(some([gt(5), lt(15)]))), every([lte(5), gte(15)])) // Should be never
+})
