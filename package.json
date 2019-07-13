@@ -29,8 +29,8 @@
   },
   "homepage": "https://github.com/mpajunen/sceletor#readme",
   "devDependencies": {
-    "ava": "^2.0.0",
-    "tslint": "^5.17.0",
-    "typescript": "^3.5.1"
+    "ava": "^2.2.0",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
   }
 }
