@@ -1,6 +1,48 @@
 import test from 'ava'
 import { always, equal, every, gt, gte, lt, lte, neq, never, not, some } from '../condition'
-import { simplify } from '../simplify'
+import { combineConditions, combineList, simplify } from '../simplify'
+
+test('combineConditions combines basic (in)equalities', t => {
+    t.deepEqual(combineConditions('every', equal(8), equal(8)), equal(8))
+    t.deepEqual(combineConditions('some', equal(8), equal(8)), equal(8))
+    t.deepEqual(combineConditions('every', equal(8), equal(15)), never)
+    t.deepEqual(combineConditions('some', equal(8), equal(15)), false)
+})
+
+test('combineCondition combines simple comparisons', t => {
+    t.deepEqual(combineConditions('every', lt(8), lt(8)), lt(8))
+    t.deepEqual(combineConditions('every', lt(8), lt(15)), lt(8))
+    t.deepEqual(combineConditions('every', lt(8), gt(8)), never)
+    t.deepEqual(combineConditions('every', lt(8), gt(15)), never)
+    t.deepEqual(combineConditions('every', lt(8), lte(8)), lt(8))
+    t.deepEqual(combineConditions('every', lt(8), gte(8)), never)
+    t.deepEqual(combineConditions('every', lt(8), gte(15)), never)
+    t.deepEqual(combineConditions('every', gt(8), lt(15)), false)
+
+    t.deepEqual(combineConditions('some', lt(8), lt(8)), lt(8))
+    t.deepEqual(combineConditions('some', lt(8), lt(15)), lt(15))
+    t.deepEqual(combineConditions('some', lt(8), gt(8)), false) // Could be neq(8)
+    t.deepEqual(combineConditions('some', lt(8), gt(15)), false)
+    t.deepEqual(combineConditions('some', lt(8), lte(8)), lte(8))
+    t.deepEqual(combineConditions('some', lt(8), gte(8)), always)
+    t.deepEqual(combineConditions('some', lt(8), gte(15)), false)
+})
+
+test('combineConditions combines conditions only with identical paths', t => {
+    t.deepEqual(combineConditions('every', equal(8, 'foo'), equal(8, 'foo')), equal(8, 'foo'))
+    t.deepEqual(combineConditions('every', equal(8, 'foo'), equal(8, 'bar')), false)
+})
+
+test('combineList combines matching conditions', t => {
+    t.deepEqual(combineList('every', [lt(8), lt(8)]), [lt(8)])
+    t.deepEqual(combineList('every', [lt(8), lt(15)]), [lt(8)])
+    t.deepEqual(combineList('every', [lt(8), lt(8), lt(8)]), [lt(8)])
+    t.deepEqual(combineList('every', [gt(8), lt(15)]), [gt(8), lt(15)])
+    t.deepEqual(
+        combineList('every', [lt(8, 'foo'), lt(15, 'bar'), lt(8, 'foo'), lt(15, 'baz'), lt(8, 'bar')]),
+        [lt(8, 'foo'), lt(8, 'bar'), lt(15, 'baz')],
+    )
+})
 
 test('simplify returns the original condition for most kinds', t => {
     const fooOneAndBarTwo = every([equal(1, 'foo'), equal(2, 'bar')])

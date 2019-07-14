@@ -1,5 +1,19 @@
-import { always, BaseKind, CompareKind, Condition, Logical, LogicalKind, never, not, Not } from './condition'
-import { combine } from './path'
+import { rules } from './compareRules'
+import {
+    always,
+    BaseKind,
+    Comparable,
+    Compare,
+    CompareKind,
+    Condition,
+    Kind,
+    Logical,
+    LogicalKind,
+    never,
+    not,
+    Not,
+} from './condition'
+import { combine, Path } from './path'
 
 export function simplify(condition: Condition): Condition {
     return trySimplify(condition)
@@ -72,6 +86,69 @@ function simplifyLogical(condition: Logical): Condition {
         }
     }
 }
+
+export function combineList(kind: LogicalKind, conditions: Condition[]): Condition[] {
+    for (let i = 0; i < conditions.length; i += 1) {
+        for (let j = i + 1; j < conditions.length; j += 1) {
+            const combined = combineConditions(kind, conditions[i], conditions[j])
+
+            if (combined) {
+                // Try to recombine the shorter list immediately.
+                // Might be better to just retry simplification from the the top again. (Or do something smarter.)
+                return combineList(kind, [
+                    ...conditions.slice(0, i),
+                    combined,
+                    ...conditions.slice(i + 1, j),
+                    ...conditions.slice(j + 1),
+                ])
+            }
+        }
+    }
+
+    return conditions
+}
+
+const compareKinds: CompareKind[] = ['equal', 'gt', 'gte', 'lt', 'lte', 'neq']
+
+const isCompare = (condition: Condition): condition is Compare => (compareKinds as Kind[]).includes(condition.kind)
+
+export function combineConditions(kind: LogicalKind, a: Condition, b: Condition): Condition | false {
+    if (!pathEqual(a.path, b.path)) {
+        return false
+    }
+
+    if (isCompare(a) && isCompare(b)) {
+        return combineComparisons(kind, a, b)
+    }
+
+    return false
+}
+
+function combineComparisons(kind: LogicalKind, left: Compare, right: Compare): Condition | false {
+    const valueCompare = compareValues(left.value, right.value)
+    const rule = rules[kind][left.kind][right.kind][valueCompare]
+
+    switch (rule) {
+        case 'always':
+            return always
+        case 'never':
+            return never
+        case 'left':
+            return left
+        case 'right':
+            return right
+        case 'either':
+            return left
+        case 'both':
+            return false
+    }
+}
+
+const pathEqual = (a: Path, b: Path): boolean =>
+    a.length === b.length && a.every((step, index) => step === b[index])
+
+const compareValues = (a: Comparable, b: Comparable): 0 | 1 | -1 =>
+    a === b ? 0 : (a < b ? -1 : 1)
 
 function simplifyNot(condition: Not): Condition {
     const item = condition.item
