@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/codegen/*",
+    "src/condition.ts",
+    "src/path.ts"
+  ]
+}

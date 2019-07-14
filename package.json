@@ -7,6 +7,7 @@
   "types": "./lib/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "generate": "tsc -p 'tsconfig.generate.json' && node lib/codegen/index.js",
     "lint": "tslint --config tslint.json --project tsconfig.json 'src/**/*.ts'",
     "lint-fix": "npm run lint -- --fix",
     "test": "tsc && ava",
