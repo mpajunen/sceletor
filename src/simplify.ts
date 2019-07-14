@@ -72,8 +72,12 @@ function simplifyLogical(condition: Logical): Condition {
             kind: unify,
             path: [],
         }
-    } else if (items.length === 1) {
-        const { path, ...item } = items[0]
+    }
+
+    const combinedItems = combineList(condition.kind, items)
+
+    if (combinedItems.length === 1) {
+        const { path, ...item } = combinedItems[0]
 
         return {
             ...item,
@@ -82,7 +86,7 @@ function simplifyLogical(condition: Logical): Condition {
     } else {
         return {
             ...condition,
-            items,
+            items: combinedItems,
         }
     }
 }
@@ -160,11 +164,11 @@ function simplifyNot(condition: Not): Condition {
             return condition
         case 'every':
         case 'some':
-            return {
+            return simplifyLogical({
                 kind: item.kind === 'every' ? 'some' : 'every',
                 items: item.items.map(i => simplify(not(i))),
                 path: combine(condition.path, item.path),
-            }
+            })
         case 'always':
             return never
         case 'gt':
