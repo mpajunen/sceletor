@@ -6,6 +6,7 @@ import {
     Compare,
     CompareKind,
     Condition,
+    IncludedIn,
     Kind,
     Logical,
     LogicalKind,
@@ -125,6 +126,10 @@ export function combineConditions(kind: LogicalKind, a: Condition, b: Condition)
         return combineComparisons(kind, a, b)
     }
 
+    if (a.kind === 'includedIn' && b.kind === 'includedIn') {
+        return combineIncludes(kind, a, b)
+    }
+
     return false
 }
 
@@ -146,6 +151,18 @@ function combineComparisons(kind: LogicalKind, left: Compare, right: Compare): C
         case 'both':
             return false
     }
+}
+
+function combineIncludes(kind: LogicalKind, left: IncludedIn, right: IncludedIn): Condition | false {
+    const values = kind === 'every'
+        ? left.values.filter(value => right.values.includes(value))
+        : [...new Set([...left.values, ...right.values])]
+
+    if (values.length === 0) {
+        return never
+    }
+
+    return { ...left, values }
 }
 
 const pathEqual = (a: Path, b: Path): boolean =>

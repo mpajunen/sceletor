@@ -1,5 +1,5 @@
 import test from 'ava'
-import { always, equal, every, gt, gte, lt, lte, neq, never, not, some } from '../condition'
+import { always, equal, every, gt, gte, includedIn, lt, lte, neq, never, not, some } from '../condition'
 import { combineConditions, combineList, simplify } from '../simplify'
 
 test('combineConditions combines basic (in)equalities', t => {
@@ -26,6 +26,15 @@ test('combineCondition combines simple comparisons', t => {
     t.deepEqual(combineConditions('some', lt(8), lte(8)), lte(8))
     t.deepEqual(combineConditions('some', lt(8), gte(8)), always)
     t.deepEqual(combineConditions('some', lt(8), gte(15)), false)
+})
+
+test('combineCondition combines include lists', t => {
+    t.deepEqual(combineConditions('every', includedIn([1, 2, 3]), includedIn([1, 2, 4])), includedIn([1, 2]))
+    t.deepEqual(combineConditions('some', includedIn([1, 2, 3]), includedIn([1, 2, 4])), includedIn([1, 2, 3, 4]))
+    t.deepEqual(combineConditions('every', includedIn([1, 2, 3]), includedIn([])), never)
+    t.deepEqual(combineConditions('some', includedIn([1, 2, 3]), includedIn([])), includedIn([1, 2, 3]))
+    t.deepEqual(combineConditions('every', includedIn([1, 2, 3]), includedIn([4, 5])), never)
+    t.deepEqual(combineConditions('some', includedIn([1, 2, 3]), includedIn([4, 5])), includedIn([1, 2, 3, 4, 5]))
 })
 
 test('combineConditions combines conditions only with identical paths', t => {
