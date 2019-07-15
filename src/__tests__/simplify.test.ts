@@ -37,6 +37,15 @@ test('combineCondition combines include lists', t => {
     t.deepEqual(combineConditions('some', includedIn([1, 2, 3]), includedIn([4, 5])), includedIn([1, 2, 3, 4, 5]))
 })
 
+test('combineCondition combines negation include lists', t => {
+    t.deepEqual(combineConditions('every', includedIn([1, 2, 3]), not(includedIn([1, 2]))), includedIn([3]))
+    t.deepEqual(combineConditions('some', includedIn([1, 2, 3]), not(includedIn([1, 2]))), always)
+    t.deepEqual(combineConditions('every', includedIn([1, 2]), not(includedIn([1, 2]))), never)
+    t.deepEqual(combineConditions('some', includedIn([1, 2]), not(includedIn([1, 2]))), always)
+    t.deepEqual(combineConditions('every', includedIn([1, 2]), not(includedIn([4, 5]))), includedIn([1, 2]))
+    t.deepEqual(combineConditions('some', includedIn([1, 2]), not(includedIn([4, 5]))), false)
+})
+
 test('combineConditions combines conditions only with identical paths', t => {
     t.deepEqual(combineConditions('every', equal(8, 'foo'), equal(8, 'foo')), equal(8, 'foo'))
     t.deepEqual(combineConditions('every', equal(8, 'foo'), equal(8, 'bar')), false)

@@ -130,6 +130,13 @@ export function combineConditions(kind: LogicalKind, a: Condition, b: Condition)
         return combineIncludes(kind, a, b)
     }
 
+    if (a.kind === 'includedIn' && b.kind === 'not' && b.item.kind === 'includedIn') {
+        return combineNegationInclude(kind, a, b.item)
+    }
+    if (b.kind === 'includedIn' && a.kind === 'not' && a.item.kind === 'includedIn') {
+        return combineNegationInclude(kind, b, a.item)
+    }
+
     return false
 }
 
@@ -163,6 +170,20 @@ function combineIncludes(kind: LogicalKind, left: IncludedIn, right: IncludedIn)
     }
 
     return { ...left, values }
+}
+
+function combineNegationInclude(kind: LogicalKind, include: IncludedIn, exclude: IncludedIn): Condition | false {
+    if (kind === 'every') {
+        const values = include.values.filter(value => !exclude.values.includes(value))
+
+        if (values.length === 0) {
+            return never
+        }
+
+        return { ...include, values }
+    } else {
+        return include.values.some(value => exclude.values.includes(value)) ? always : false
+    }
 }
 
 const pathEqual = (a: Path, b: Path): boolean =>
