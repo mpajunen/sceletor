@@ -1,6 +1,6 @@
 {
   "name": "@mpajunen/sceletor",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A declarative selector library",
   "private": false,
   "main": "./lib/index.js",
