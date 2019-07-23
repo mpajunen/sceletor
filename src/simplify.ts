@@ -33,6 +33,7 @@ function trySimplify(condition: Condition): Condition {
         case 'lte':
         case 'neq':
         case 'never':
+        case 'noValue':
             return condition
         case 'every':
         case 'some':
@@ -199,6 +200,7 @@ function simplifyNot(condition: Not): Condition {
         case 'allOf':
         case 'anyOf':
         case 'includedIn':
+        case 'noValue':
             return condition
         case 'every':
         case 'some':

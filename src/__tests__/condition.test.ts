@@ -13,6 +13,7 @@ import {
     neq,
     never,
     not,
+    noValue,
     some,
 } from '../condition'
 
@@ -83,6 +84,10 @@ test('never is a condition that never matches', snap(
 
 test('not creates a complement condition', snap(
     not(gt(30)),
+))
+
+test('noValue creates a missing value condition', snap(
+    noValue(),
 ))
 
 test('some combines conditions at least one of which must apply', snap(

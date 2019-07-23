@@ -6,6 +6,7 @@ export type Kind =
     | CompareKind
     | LogicalKind
     | 'includedIn'
+    | 'noValue'
     | 'not'
 
 export type Condition =
@@ -14,6 +15,7 @@ export type Condition =
     | Compare
     | Logical
     | IncludedIn
+    | NoValue
     | Not
 
 export type BaseKind =
@@ -94,6 +96,16 @@ export const includedIn = (values: Array<Comparable | null>, path: Path | PathS
     kind: 'includedIn',
     path: Array.isArray(path) ? path : [path],
     values,
+})
+
+export interface NoValue {
+    kind: 'noValue'
+    path: Path
+}
+
+export const noValue = (path: Path | PathStep = []): NoValue => ({
+    kind: 'noValue',
+    path: Array.isArray(path) ? path : [path],
 })
 
 export type LogicalKind =

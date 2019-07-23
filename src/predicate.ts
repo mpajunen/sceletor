@@ -30,6 +30,8 @@ export function predicate<T>(condition: Condition): Predicate<T> {
 
             return (value: T) => !inner(get(value))
         }
+        case 'noValue':
+            return (value: T) => [undefined, null].includes(get(value))
     }
 }
 

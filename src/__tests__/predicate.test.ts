@@ -1,5 +1,21 @@
 import test from 'ava'
-import { allOf, always, anyOf, equal, every, gt, gte, includedIn, lt, lte, neq, never, not, some } from '../condition'
+import {
+    allOf,
+    always,
+    anyOf,
+    equal,
+    every,
+    gt,
+    gte,
+    includedIn,
+    lt,
+    lte,
+    neq,
+    never,
+    not,
+    noValue,
+    some,
+} from '../condition'
 import { predicate } from '../predicate'
 
 test('allOf creates conditions where every value must match', t => {
@@ -167,6 +183,18 @@ test('not creates a complement condition', t => {
     t.true(isThirtyOrUnder(20))
     t.true(isThirtyOrUnder(30))
     t.false(isThirtyOrUnder(40))
+})
+
+test('noValue creates a value existence condition', t => {
+    const isNoValue = predicate(noValue())
+
+    t.true(isNoValue(null))
+    t.true(isNoValue(undefined))
+    t.false(isNoValue(''))
+    t.false(isNoValue(false))
+    t.false(isNoValue(0))
+    t.false(isNoValue(1))
+    t.false(isNoValue([]))
 })
 
 test('some combines conditions at least one of which must apply', t => {
