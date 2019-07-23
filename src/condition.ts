@@ -87,10 +87,10 @@ export const neq = compare('neq')
 export interface IncludedIn {
     kind: 'includedIn'
     path: Path
-    values: Array<Comparable | undefined>
+    values: Array<Comparable | null>
 }
 
-export const includedIn = (values: Array<Comparable | undefined>, path: Path | PathStep = []): IncludedIn => ({
+export const includedIn = (values: Array<Comparable | null>, path: Path | PathStep = []): IncludedIn => ({
     kind: 'includedIn',
     path: Array.isArray(path) ? path : [path],
     values,

@@ -117,14 +117,15 @@ test('gte creates a greater than or equal comparison condition', t => {
 })
 
 test('includedIn creates a condition where the value must match one of the options', t => {
-    const isOneOrTwoOrThreeOrUndefined = predicate(includedIn([1, 2, 3, undefined]))
+    const isInValues = predicate(includedIn([1, 2, 3, null]))
 
-    t.false(isOneOrTwoOrThreeOrUndefined(0))
-    t.true(isOneOrTwoOrThreeOrUndefined(1))
-    t.true(isOneOrTwoOrThreeOrUndefined(3))
-    t.false(isOneOrTwoOrThreeOrUndefined(5))
-    t.false(isOneOrTwoOrThreeOrUndefined(false))
-    t.true(isOneOrTwoOrThreeOrUndefined(undefined))
+    t.false(isInValues(0))
+    t.true(isInValues(1))
+    t.true(isInValues(3))
+    t.false(isInValues(5))
+    t.false(isInValues(false))
+    t.true(isInValues(null))
+    t.false(isInValues(undefined))
 })
 
 test('lt creates a less than comparison condition', t => {
