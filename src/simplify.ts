@@ -206,8 +206,8 @@ function simplifyNot(condition: Not): Condition {
         case 'some':
             return simplifyLogical({
                 kind: item.kind === 'every' ? 'some' : 'every',
-                items: item.items.map(i => simplify(not(i))),
                 path: combine(condition.path, item.path),
+                items: item.items.map(i => simplify(not(i))),
             })
         case 'always':
             return never
