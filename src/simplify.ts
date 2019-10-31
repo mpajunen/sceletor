@@ -22,9 +22,7 @@ export function simplify(condition: Condition): Condition {
 
 function trySimplify(condition: Condition): Condition {
     switch (condition.kind) {
-        case 'allOf':
         case 'always':
-        case 'anyOf':
         case 'equal':
         case 'gt':
         case 'gte':
@@ -197,8 +195,6 @@ function simplifyNot(condition: Not): Condition {
     const item = condition.item
 
     switch (item.kind) {
-        case 'allOf':
-        case 'anyOf':
         case 'includedIn':
         case 'noValue':
             return condition

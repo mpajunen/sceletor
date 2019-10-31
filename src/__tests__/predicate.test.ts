@@ -1,8 +1,6 @@
 import test from 'ava'
 import {
-    allOf,
     always,
-    anyOf,
     equal,
     every,
     gt,
@@ -17,32 +15,6 @@ import {
     some,
 } from '../condition'
 import { predicate } from '../predicate'
-
-test('allOf creates conditions where every value must match', t => {
-    const allEight = predicate(allOf(equal(8)))
-
-    t.false(allEight([1, 2, 3]))
-    t.false(allEight([1, 2, 8]))
-    t.true(allEight([8, 8, 8]))
-    t.true(allEight([8]))
-})
-
-test('allOf conditions match empty collections', t => {
-    const allEight = predicate(allOf(equal(8)))
-
-    t.true(allEight([]))
-})
-
-test('allOf conditions work with properties', t => {
-    const everyFooBarEight = predicate(allOf(equal(8, 'bar'), 'foo'))
-
-    t.false(everyFooBarEight({ foo: [{ bar: 1 }, { bar: 2 }, { bar: 9 }] }))
-    t.false(everyFooBarEight({ foo: [{ bar: 1 }, { bar: 2 }, { bar: 8 }] }))
-    t.true(everyFooBarEight({ foo: [{ bar: 8 }, { bar: 8 }, { bar: 8 }] }))
-    t.false(everyFooBarEight({ foo: [{ bar: 1 }] }))
-    t.true(everyFooBarEight({ foo: [{ bar: 8 }] }))
-    t.true(everyFooBarEight({ baz: [{ bar: 8 }] }))
-})
 
 test('always is a condition that always matches', t => {
     const isTrue = predicate(always)
@@ -82,21 +54,6 @@ test('every combines conditions with nested paths', t => {
     t.true(condition({ baz: { foo: 3, bar: 10 } }))
     t.false(condition({ baz: { foo: 2, bar: 10 } }))
     t.false(condition({ foo: 2, bar: 10 }))
-})
-
-test('anyOf creates conditions where at least one value must match', t => {
-    const anyEight = predicate(anyOf(equal(8)))
-
-    t.false(anyEight([1, 2, 3]))
-    t.true(anyEight([1, 2, 8]))
-    t.true(anyEight([8, 8, 8]))
-    t.true(anyEight([8]))
-})
-
-test('anyOf conditions do not match empty collections', t => {
-    const anyEight = predicate(anyOf(equal(8)))
-
-    t.false(anyEight([]))
 })
 
 test('equal creates a sameness condition', t => {

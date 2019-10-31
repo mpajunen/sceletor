@@ -2,7 +2,6 @@ import { Path, PathStep } from './path'
 
 export type Kind =
     | BaseKind
-    | CollectionKind
     | CompareKind
     | LogicalKind
     | 'includedIn'
@@ -11,7 +10,6 @@ export type Kind =
 
 export type Condition =
     | Base
-    | Collection
     | Compare
     | Logical
     | IncludedIn
@@ -34,25 +32,6 @@ const base = (kind: BaseKind): Base => ({
 
 export const always = base('always')
 export const never = base('never')
-
-export type CollectionKind =
-    | 'allOf'
-    | 'anyOf'
-
-export interface Collection {
-    kind: CollectionKind
-    path: Path
-    item: Condition
-}
-
-const collection = (kind: CollectionKind) => (item: Condition, path: Path | PathStep = []): Collection => ({
-    kind,
-    path: Array.isArray(path) ? path : [path],
-    item,
-})
-
-export const allOf = collection('allOf')
-export const anyOf = collection('anyOf')
 
 export type Comparable =
     | boolean
