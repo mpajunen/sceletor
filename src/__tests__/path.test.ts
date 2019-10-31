@@ -32,14 +32,14 @@ test('accessor returns a nested property with array path', t => {
     t.is(bur, 'bob')
 })
 
-test('accessor returns undefined if path property is not found', t => {
+test('accessor returns null if path property is not found', t => {
     const ugh = accessor(['ugh'])(blob)
 
-    t.is(ugh, undefined)
+    t.is(ugh, null)
 })
 
-test('accessor returns undefined if nested path property is not found', t => {
+test('accessor returns null if nested path property is not found', t => {
     const bug = accessor(['ugh', 'bug'])(blob)
 
-    t.is(bug, undefined)
+    t.is(bug, null)
 })

@@ -141,7 +141,7 @@ test('includedIn creates a condition where the value must match one of the optio
     t.false(isInValues(5))
     t.false(isInValues(false))
     t.true(isInValues(null))
-    t.false(isInValues(undefined))
+    t.true(isInValues(undefined)) // Treated the same as null
 })
 
 test('lt creates a less than comparison condition', t => {
