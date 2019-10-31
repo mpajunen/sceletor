@@ -1,6 +1,5 @@
 import test, { ExecutionContext } from 'ava'
 import {
-    allOf,
     always,
     Condition,
     equal,
@@ -22,10 +21,6 @@ const snap = (contents: Condition) =>
         t.snapshot(contents)
     }
 
-test('allOf creates collection conditions where every value must match', snap(
-    allOf(equal(8)),
-))
-
 test('always is a condition that always matches', snap(
     always,
 ))
@@ -40,10 +35,6 @@ test('every combines conditions of different properties', snap(
 
 test('every combines conditions with nested paths', snap(
     every([equal(3, 'foo'), gt(5, 'bar')], 'baz'),
-))
-
-test('anyOf creates conditions where at least one value must match', snap(
-    allOf(equal(8)),
 ))
 
 test('equal creates a sameness condition', snap(
